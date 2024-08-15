@@ -1,0 +1,59 @@
+# Note: No significant whitespace
+
+#Vertex: x z
+[BEGIN_VERTS] # Outer sector
+
+	-20.0  20.0
+	 20.0  20.0
+	 20.0 -20.0
+	-20.0 -20.0
+	
+[END_VERTS]
+
+[BEGIN_VERTS] # Hole
+	
+	 10.0  10.0
+	-10.0  10.0
+	-10.0 -10.0
+	 10.0 -10.0
+
+[END_VERTS]
+
+
+# Wall: vert1 vert2 is_portal
+[BEGIN_WALLS]
+
+	0 1 false
+	1 2 false
+	2 3 false
+	3 0 false
+
+[END_WALLS]
+
+[BEGIN_WALLS]
+	
+	4 5 true
+	5 6 true
+	6 7 true
+	7 4 true
+
+	
+[END_WALLS]
+
+# Sector: floor_height ceiling_height cycle1 [, [cycle2, ...]]
+# Cycles are walls indices that constitute one simple closed polygon (No self-intersections).
+# Cycles are separated by commas
+# Each hole must be its own cycle
+# Each hole must be specified in counter-clockwise direction
+[BEGIN_SECTORS]
+
+	 0.0 10.0 0 1 2 3, 4 5 6 7
+  -5.0 7.0 4 5 6 7
+	 #-2.0 10.0 8 9 10 11
+
+[END_SECTORS]
+
+
+
+
+# TODO: Change to a binary format once the level editor is done

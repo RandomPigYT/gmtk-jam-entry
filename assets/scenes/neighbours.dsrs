@@ -1,0 +1,59 @@
+[BEGIN_VERTS]
+
+	-20.0  20.0 # 0
+	 20.0  20.0 # 1
+	 20.0 -20.0 # 2
+	-20.0 -20.0 # 3
+
+[END_VERTS]
+
+[BEGIN_VERTS]
+
+	-20.0  40.0 # 4
+	 20.0  40.0 # 5
+
+[END_VERTS]
+
+[BEGIN_VERTS]
+
+	40.0 40.0 # 6
+	40.0 20.0 # 7
+
+[END_VERTS]
+
+
+[BEGIN_WALLS]
+	
+	0 1 true
+	1 2 false
+	2 3 false
+	3 0 false	
+
+[END_WALLS]
+
+[BEGIN_WALLS]
+
+	4 5 false
+	5 1 true
+	0 4 false
+
+[END_WALLS]
+
+[BEGIN_WALLS]
+
+	5 6 false
+	6 7 false
+	7 1 false
+	
+
+[END_WALLS]
+
+
+[BEGIN_SECTORS]
+	
+	0.0 10.0 0 1 2 3 
+	0.0 10.0 0 4 5 6
+	0.0 10.0 7 8 9 5
+
+
+[END_SECTORS]

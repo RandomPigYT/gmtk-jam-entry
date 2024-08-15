@@ -1,0 +1,9 @@
+[submodule "external/SDL"]
+	path = external/SDL
+	url = git@github.com:libsdl-org/SDL.git
+[submodule "external/cglm"]
+	path = external/cglm
+	url = git@github.com:recp/cglm.git
+[submodule "external/raylib"]
+	path = external/raylib
+	url = git@github.com:raysan5/raylib.git

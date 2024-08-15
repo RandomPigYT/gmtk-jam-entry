@@ -25,7 +25,7 @@ OBJ_DIRS := $(patsubst $(SRC)/%, $(OBJ)/%, $(shell find $(SRC)/ -mindepth 1 -typ
 CREATE_DIR_COMMAND := ./dirs.sh
 
 
-PROJECTS := test doom-style-renderer.so 
+PROJECTS := game
 
 .PHONY: all dirs clean external run
 
@@ -33,11 +33,8 @@ all: dirs $(PROJECTS)
 
 # ---------------------- PROJECTS ----------------------
 
-doom-style-renderer.so: 
-	@$(MAKE) -C $(SRC)/doom-style-renderer
-
-test: doom-style-renderer.so
-	@$(MAKE) -C $(SRC)/test
+game: 
+	@$(MAKE) -C $(SRC)/game
 
 
 # ---------------------- UTILITY ----------------------
@@ -56,8 +53,8 @@ clean:
 	-@rm -rf $(BIN)
 	-@rm -f ./val.txt
 
-run: bin/test
-	./bin/test "./assets/scenes/neighbours.dsrs"
+run: bin/game
+	./bin/game
 
 valgrind: 
 	@valgrind --leak-check=full \

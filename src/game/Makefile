@@ -1,12 +1,12 @@
-PROJ_SRC := $(ROOT_PATH)/$(SRC)/test
-PROJ_OBJ := $(ROOT_PATH)/$(OBJ)/test
+PROJ_SRC := $(ROOT_PATH)/$(SRC)/game
+PROJ_OBJ := $(ROOT_PATH)/$(OBJ)/game
 PROJ_BIN := $(ROOT_PATH)/$(BIN)
 PROJ_INCLUDE := $(ROOT_PATH)/$(INCLUDE)
 
-CFLAGS += -Wall -Wextra -ggdb3 -std=gnu23 -I$(EXTERNAL_DIR)/SDL/include -O3
-LDFLAGS += -Wl,-rpath=$(EXTERNAL_LIBS_DIR)/SDL -L$(EXTERNAL_LIBS_DIR)/SDL -lSDL3 -ldoom-style-renderer
+CFLAGS += -Wall -Wextra -ggdb3 -std=gnu23 -O3
+LDFLAGS += 
 
-TARGET := $(PROJ_BIN)/test
+TARGET := $(PROJ_BIN)/game
 
 SRCS := $(shell find $(PROJ_SRC) -type  f -name "*.c")
 OBJS := $(patsubst $(PROJ_SRC)/%.c, $(PROJ_OBJ)/%.o, $(SRCS))

@@ -25,7 +25,7 @@ OBJ_DIRS := $(patsubst $(SRC)/%, $(OBJ)/%, $(shell find $(SRC)/ -mindepth 1 -typ
 CREATE_DIR_COMMAND := ./dirs.sh
 
 
-PROJECTS := game
+PROJECTS := game plugin
 
 .PHONY: all dirs clean external run
 
@@ -33,9 +33,11 @@ all: dirs $(PROJECTS)
 
 # ---------------------- PROJECTS ----------------------
 
-game: 
+game: plugin
 	@$(MAKE) -C $(SRC)/game
 
+plugin:
+	@$(MAKE) -C $(SRC)/plugin
 
 # ---------------------- UTILITY ----------------------
 

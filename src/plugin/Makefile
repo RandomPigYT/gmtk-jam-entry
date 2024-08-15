@@ -1,12 +1,12 @@
-PROJ_SRC := $(ROOT_PATH)/$(SRC)/game
-PROJ_OBJ := $(ROOT_PATH)/$(OBJ)/game
+PROJ_SRC := $(ROOT_PATH)/$(SRC)/plugin
+PROJ_OBJ := $(ROOT_PATH)/$(OBJ)/plugin
 PROJ_BIN := $(ROOT_PATH)/$(BIN)
 PROJ_INCLUDE := $(ROOT_PATH)/$(INCLUDE)
 
-CFLAGS += -Wall -Wextra -ggdb3 -std=gnu23 -O3
-LDFLAGS += -lplug
+CFLAGS  += -Wall -Wextra -ggdb3 -std=gnu23 -fPIC -O3
+LDFLAGS +=
 
-TARGET := $(PROJ_BIN)/game
+TARGET := $(PROJ_BIN)/libplug.so
 
 SRCS := $(shell find $(PROJ_SRC) -type  f -name "*.c")
 OBJS := $(patsubst $(PROJ_SRC)/%.c, $(PROJ_OBJ)/%.o, $(SRCS))
@@ -25,7 +25,7 @@ all: $(TARGET)
 $(TARGET): $(OBJS) $(ASMS)
 	@echo
 	@echo building $(TARGET)
-	@$(LD) $(CFLAGS) $(OBJS) -o $@ $(LDFLAGS)
+	@$(LD) $(CFLAGS) -shared $(OBJS) -o $@ $(LDFLAGS)
 	@echo built $(TARGET)
 
 -include $(DEPS)
@@ -38,6 +38,7 @@ $(PROJ_OBJ)/%.o: $(PROJ_SRC)/%.c
 
 $(PROJ_OBJ)/%.s: $(PROJ_SRC)/%.c
 	@echo Generating assembly $@
-	@$(CC) $(CFLAGS) -S $< -o $@
+	@$(CC) $(CFLAGS) -S -masm=intel $< -o $@
 	@echo Generated $@
 	@echo
+

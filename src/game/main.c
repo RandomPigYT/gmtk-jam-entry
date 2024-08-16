@@ -2,15 +2,18 @@
 #include "plugin-interface.h"
 #include "hotreload.h"
 
-#ifndef PLATFORM_WEB
 #include <stdio.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+#ifdef PLATFORM_WEB
+
+#include <emscripten/emscripten.h>
+
 #endif
 
 #define WIDTH 16
 #define HEIGHT 9
 #define FACTOR 60
-
-void raylib_js_set_entry(void (*entry)(void));
 
 void game_frame() {
   BeginDrawing();
@@ -33,9 +36,11 @@ int main(void) {
 
 #ifdef PLATFORM_WEB
 
-  raylib_js_set_entry(plug_update);
+  emscripten_set_main_loop(plug_update, 0, 1);
 
-#else
+#endif
+
+#ifndef PLATFORM_WEB
   SetRandomSeed(69);
 
   while (!WindowShouldClose()) {

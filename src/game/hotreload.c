@@ -1,9 +1,7 @@
-#ifndef PLATFORM_WEB
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
-#endif
 
 #include "hotreload.h"
 #include "plugin-interface.h"
@@ -77,7 +75,7 @@ void hotreload_load_plug(void) {
 }
 
 void hotreload_cleanup(void) {
-#ifndef PLATFORM_WEB
+#ifdef HOT_RELOAD
   assert(plug != nullptr);
   if (dlclose(plug) != 0) {
     fprintf(stderr, "%s\n", dlerror());

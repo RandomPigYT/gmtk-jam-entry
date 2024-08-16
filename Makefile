@@ -12,8 +12,8 @@ ifeq ($(PLATFORM), linux)
 
 else ifeq ($(PLATFORM), web)
 
-	CC := clang
-	LD := clang
+	CC := emcc
+	LD := emcc
 	
 endif
 
@@ -34,7 +34,7 @@ ifeq ($(PLATFORM), linux)
 
 else
 
-LDFLAGS :=
+	LDFLAGS := -Wl,-rpath=$(ROOT_PATH)/$(BIN) -L$(ROOT_PATH)/$(BIN) -L$(ROOT_PATH) -l:./libraylib.a -lm
 
 endif
 

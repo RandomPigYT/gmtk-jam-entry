@@ -34,7 +34,8 @@ void plug_post_reload(void *prev_state) {
 
 void plug_update(void) {
   BeginDrawing();
-  ClearBackground((Color){ 24, 24, 24, 255 });
+  //ClearBackground((Color){ 24, 24, 24, 255 });
+  ClearBackground(RED);
   DrawTexture(tex, 0, 0, WHITE);
   EndDrawing();
 }

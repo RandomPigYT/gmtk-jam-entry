@@ -3,8 +3,8 @@ PROJ_OBJ := $(ROOT_PATH)/$(OBJ)/game
 PROJ_BIN := $(ROOT_PATH)/$(BIN)
 PROJ_INCLUDE := $(ROOT_PATH)/$(INCLUDE)
 
-CFLAGS += -Wall -Wextra -ggdb3 -std=gnu23 -O3
-LDFLAGS += -lplug
+CFLAGS += -Wall -Wextra -ggdb3 -std=gnu23 -O3 -DHOT_RELOAD
+LDFLAGS += 
 TARGET := $(PROJ_BIN)/game
 
 SRCS := $(shell find $(PROJ_SRC) -type  f -name "*.c")

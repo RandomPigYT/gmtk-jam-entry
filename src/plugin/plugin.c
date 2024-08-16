@@ -1,14 +1,36 @@
 #include "plugin.h"
-#include "raylib/src/raylib.h"
+#include <raylib/src/raylib.h>
 
 #ifndef PLATFORM_WEB
 #include <stdio.h>
+#include <stdlib.h>
+#include <assert.h>
+#include <string.h>
 #endif
 
-void foo(void) {
+static struct PluginState *plug_state = NULL;
+
+void plug_init(void) {
 #ifndef PLATFORM_WEB
-  printf("Hi from plugin!\n");
-#endif
 
-  ClearBackground(BLUE);
+  plug_state = malloc(sizeof(*plug_state));
+  assert(plug_state != NULL && "Failed to initialize plugin state");
+
+  memset(plug_state, 0, sizeof(*plug_state));
+
+#endif
+}
+
+void *plug_pre_reload(void) {
+  return plug_state;
+}
+
+void plug_post_reload(void *prev_state) {
+  plug_state = prev_state;
+}
+
+void plug_update(void) {
+  BeginDrawing();
+  ClearBackground(GetColor(0x181818ff));
+  EndDrawing();
 }

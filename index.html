@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>game</title>
+  </head>
+	<canvas id='game'></canvas>
+  <body>
+		<script src="./external/zozlib.js/raylib.js"></script>
+		<script>
+			const raylibjs = new RaylibJs();
+			raylibjs.start({
+				wasmPath: './bin/game.wasm',
+				canvasId: 'game',
+			});
+		</script>
+  </body>
+</html>

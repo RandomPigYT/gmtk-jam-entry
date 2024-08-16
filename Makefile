@@ -3,8 +3,19 @@ MAKEFLAGS += --no-print-directory -s
 ROOT_PATH := $(strip $(patsubst %/, %, $(dir $(abspath $(lastword $(MAKEFILE_LIST))))))
 export ROOT_PATH
 
-CC := gcc
-LD := gcc
+PLATFORM := linux
+
+ifeq ($(PLATFORM), linux)
+
+	CC := gcc
+	LD := gcc
+
+else ifeq ($(PLATFORM), web)
+
+	CC := clang
+	LD := clang
+	
+endif
 
 SRC := src
 OBJ := obj
@@ -15,26 +26,52 @@ EXTERNAL_DIR := $(ROOT_PATH)/external
 EXTERNAL_LIBS_DIR := $(ROOT_PATH)/external-libs
 
 CFLAGS := -I$(ROOT_PATH)/$(SRC) -isystem $(EXTERNAL_DIR) -I$(ROOT_PATH)/$(INCLUDE)
-LDFLAGS := -Wl,-rpath=$(ROOT_PATH)/$(BIN) -L$(ROOT_PATH)/$(BIN) -lm
+
+ifeq ($(PLATFORM), linux)
+
+	LDFLAGS := -Wl,-rpath=$(ROOT_PATH)/$(BIN) -L$(ROOT_PATH)/$(BIN) -L$(ROOT_PATH)/$(EXTERNAL_LIBS_DIR)/raylib -lraylib -lm
+
+else
+
+LDFLAGS :=
+
+endif
 
 GENERATE_ASM := 1
 
-export CC LD SRC OBJ BIN INCLUDE EXTERNAL_DIR EXTERNAL_LIBS_DIR CFLAGS LDFLAGS GENERATE_ASM
+export PLATFORM CC LD SRC OBJ BIN INCLUDE EXTERNAL_DIR EXTERNAL_LIBS_DIR CFLAGS LDFLAGS GENERATE_ASM
 
 OBJ_DIRS := $(patsubst $(SRC)/%, $(OBJ)/%, $(shell find $(SRC)/ -mindepth 1 -type d))
 CREATE_DIR_COMMAND := ./dirs.sh
 
+ifeq ($(PLATFORM), linux)
 
-PROJECTS := game plugin
+	PROJECTS := game plugin
 
-.PHONY: all dirs clean external run
+else ifeq ($(PLATFORM), web)
+
+	PROJECTS := game
+	
+endif
+
+
+.PHONY: all dirs clean external run 
+.PHONY: $(PROJECTS)
 
 all: dirs $(PROJECTS)
 
 # ---------------------- PROJECTS ----------------------
 
-game: plugin
+game: $(if $(findstring $(PLATFORM),linux),$(filter-out game,$(PROJECTS))) 
+ifeq ($(PLATFORM), linux)
+
 	@$(MAKE) -C $(SRC)/game
+
+else ifeq ($(PLATFORM), web)
+
+	@$(MAKE) -C $(SRC)
+
+endif
 
 plugin:
 	@$(MAKE) -C $(SRC)/plugin

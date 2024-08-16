@@ -5,7 +5,6 @@ PROJ_INCLUDE := $(ROOT_PATH)/$(INCLUDE)
 
 CFLAGS += -Wall -Wextra -ggdb3 -std=gnu23 -O3
 LDFLAGS += -lplug
-
 TARGET := $(PROJ_BIN)/game
 
 SRCS := $(shell find $(PROJ_SRC) -type  f -name "*.c")

@@ -3,11 +3,12 @@
 PROJ_SRC := $(ROOT_PATH)/$(SRC)
 PROJ_OBJ := $(ROOT_PATH)/$(OBJ)
 PROJ_BIN := $(ROOT_PATH)/$(BIN)
+PROJ_WASM := $(ROOT_PATH)/$(WASM)
 PROJ_INCLUDE := $(ROOT_PATH)/$(INCLUDE)
 
 CFLAGS += --target=wasm32 -Wall -Wextra -ggdb3 -std=gnu23 -O3 -DPLATFORM_WEB -DNDEBUG
 LDFLAGS += -nostdlib -Wl,--export-all -Wl,--no-entry -Wl,--allow-undefined
-TARGET := $(PROJ_BIN)/game.wasm
+TARGET := $(PROJ_WASM)/game.wasm
 
 SRCS := $(shell find $(PROJ_SRC) -type  f -name "*.c")
 OBJS := $(patsubst $(PROJ_SRC)/%.c, $(PROJ_OBJ)/%.o, $(SRCS))

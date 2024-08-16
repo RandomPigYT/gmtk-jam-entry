@@ -20,6 +20,7 @@ endif
 SRC := src
 OBJ := obj
 BIN := bin
+WASM := wasm
 INCLUDE := include
 
 EXTERNAL_DIR := $(ROOT_PATH)/external
@@ -39,7 +40,7 @@ endif
 
 GENERATE_ASM := 1
 
-export PLATFORM CC LD SRC OBJ BIN INCLUDE EXTERNAL_DIR EXTERNAL_LIBS_DIR CFLAGS LDFLAGS GENERATE_ASM
+export PLATFORM CC LD SRC OBJ BIN WASM INCLUDE EXTERNAL_DIR EXTERNAL_LIBS_DIR CFLAGS LDFLAGS GENERATE_ASM
 
 OBJ_DIRS := $(patsubst $(SRC)/%, $(OBJ)/%, $(shell find $(SRC)/ -mindepth 1 -type d))
 CREATE_DIR_COMMAND := ./dirs.sh
@@ -85,11 +86,13 @@ external:
 dirs: 
 	@mkdir -p $(BIN) 
 	@mkdir -p $(OBJ)
+	@mkdir -p $(WASM)
 	@$(CREATE_DIR_COMMAND) $(OBJ_DIRS)
 
 clean:
 	-@rm -rf $(OBJ)
 	-@rm -rf $(BIN)
+	-@rm -rf $(WASM)
 	-@rm -f ./val.txt
 
 run: bin/game

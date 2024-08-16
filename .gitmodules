@@ -4,6 +4,6 @@
 [submodule "external/raylib"]
 	path = external/raylib
 	url = git@github.com:raysan5/raylib.git
-[submodule "external/zozlib.js"]
-	path = external/zozlib.js
+[submodule "external/zozlib"]
+	path = external/zozlib
 	url = git@github.com:tsoding/zozlib.js.git

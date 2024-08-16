@@ -7,9 +7,9 @@ PROJ_WASM := $(ROOT_PATH)/$(WASM)
 PROJ_INCLUDE := $(ROOT_PATH)/$(INCLUDE)
 
 CFLAGS += -Wall -Wextra -ggdb3 -std=gnu23 -O3 -DPLATFORM_WEB -DNDEBUG
-LDFLAGS += -s USE_GLFW=3 --preload-file ./
+LDFLAGS += -sFORCE_FILESYSTEM -s USE_GLFW=3 --use-preload-plugins --preload-file $(PROJ_WASM)@ --shell-file $(ROOT_PATH)/index_template.html
 
-TARGET := $(ROOT_PATH)/index.html
+TARGET := $(PROJ_WASM)/index.html
 
 SRCS := $(shell find $(PROJ_SRC) -type  f -name "*.c")
 OBJS := $(patsubst $(PROJ_SRC)/%.c, $(PROJ_OBJ)/%.o, $(SRCS))

@@ -70,6 +70,7 @@ ifeq ($(PLATFORM), linux)
 
 else ifeq ($(PLATFORM), web)
 
+	@cp -r assets $(WASM)
 	@$(MAKE) -C $(SRC)
 
 endif

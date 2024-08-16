@@ -1,7 +1,9 @@
+#ifndef PLATFORM_WEB
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
+#endif
 
 #include "hotreload.h"
 #include "plugin-interface.h"
@@ -25,12 +27,12 @@
 
 #ifdef HOT_RELOAD
 
-#define X(name, ret, ...) ret (*name)(__VA_ARGS__) = NULL;
+#define X(name, ret, ...) ret (*name)(__VA_ARGS__) = nullptr;
 PLUGIN_FUNCTIONS();
 
 #endif
 
-static void *plug = NULL;
+static void *plug = nullptr;
 
 void hotreload_load_plug(void) {
 #ifdef HOT_RELOAD
@@ -75,9 +77,11 @@ void hotreload_load_plug(void) {
 }
 
 void hotreload_cleanup(void) {
-  assert(plug != NULL);
+#ifndef PLATFORM_WEB
+  assert(plug != nullptr);
   if (dlclose(plug) != 0) {
     fprintf(stderr, "%s\n", dlerror());
     exit(EXIT_FAILURE);
   }
+#endif
 }

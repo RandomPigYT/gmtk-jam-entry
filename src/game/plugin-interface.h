@@ -1,8 +1,6 @@
 #ifndef PLUG_INTERFACE_H
 #define PLUG_INTERFACE_H
 
-#include <stdlib.h>
-
 // enum plug_callback_mode {
 //   PLUG_GLFW_WINDOW_SIZE,
 //   PLUG_GLFW_NONE = -1,

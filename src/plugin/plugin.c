@@ -8,7 +8,8 @@
 #include <string.h>
 #endif
 
-static struct PluginState *plug_state = NULL;
+static struct PluginState *plug_state = nullptr;
+static Texture2D tex;
 
 void plug_init(void) {
 #ifndef PLATFORM_WEB
@@ -19,6 +20,8 @@ void plug_init(void) {
   memset(plug_state, 0, sizeof(*plug_state));
 
 #endif
+
+  tex = LoadTexture("./assets/NewerCampFire_2.png");
 }
 
 void *plug_pre_reload(void) {
@@ -31,6 +34,7 @@ void plug_post_reload(void *prev_state) {
 
 void plug_update(void) {
   BeginDrawing();
-  ClearBackground(GetColor(0x181818ff));
+  ClearBackground((Color){ 24, 24, 24, 255 });
+  DrawTexture(tex, 0, 0, WHITE);
   EndDrawing();
 }

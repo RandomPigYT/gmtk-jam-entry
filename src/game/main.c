@@ -29,9 +29,7 @@ void game_frame() {
 }
 
 int main(void) {
-#ifndef PLATFORM_WEB
   SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-#endif
 
   InitWindow(WIDTH * FACTOR, HEIGHT * FACTOR, "Game");
   SetTargetFPS(60);

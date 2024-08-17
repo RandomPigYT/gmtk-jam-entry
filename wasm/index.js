@@ -35,7 +35,7 @@ if (ENVIRONMENT_IS_NODE) {
 
 // --pre-jses are emitted after the Module integration code, so that they can
 // refer to Module (if they choose; they can also define Module)
-// include: /tmp/tmpiz4xj2n6.js
+// include: /tmp/tmp2iq59j0d.js
 
   if (!Module.expectedDataFileDownloads) {
     Module.expectedDataFileDownloads = 0;
@@ -216,11 +216,11 @@ Module['FS_createPath']("/", "assets", true, true);
     }
 
     }
-    loadPackage({"files": [{"filename": "/assets/NewerCampFire_2.png", "start": 0, "end": 11166}, {"filename": "/assets/gmtk-texture-atlas.png", "start": 11166, "end": 12060}, {"filename": "/index.data", "start": 12060, "end": 23226}, {"filename": "/index.html", "start": 23226, "end": 23700}, {"filename": "/index.js", "start": 23700, "end": 372156}, {"filename": "/index.wasm", "start": 372156, "end": 840732}], "remote_package_size": 840732});
+    loadPackage({"files": [{"filename": "/assets/NewerCampFire_2.png", "start": 0, "end": 11166}, {"filename": "/assets/gmtk-texture-atlas.png", "start": 11166, "end": 12060}, {"filename": "/index.data", "start": 12060, "end": 23226}, {"filename": "/index.html", "start": 23226, "end": 23899}, {"filename": "/index.js", "start": 23899, "end": 372879}, {"filename": "/index.wasm", "start": 372879, "end": 847884}], "remote_package_size": 847884});
 
   })();
 
-// end include: /tmp/tmpiz4xj2n6.js
+// end include: /tmp/tmp2iq59j0d.js
 
 
 // Sometimes an existing Module object exists with properties

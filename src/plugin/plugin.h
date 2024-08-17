@@ -6,11 +6,20 @@
 #include <raylib/src/raylib.h>
 #include <stdint.h>
 
+#define ATLAS_GRID_SIZE 16
+
 struct plug_Player {
   Vector2 pos;
   Vector2 vel;
 
+  Rectangle hitbox; // Relative
+
   Camera2D camera;
+
+  float cam_move_pad_x;
+  float cam_move_pad_y;
+
+  bool grounded;
 };
 
 enum plug_CellType {

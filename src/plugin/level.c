@@ -4,8 +4,6 @@
 
 #include <stdlib.h>
 
-#define ATLAS_GRID_SIZE 16
-
 // clang-format off
 
 static const enum plug_CellType defualt_grid[DEFAULT_LEVEL_WIDTH * DEFAULT_LEVEL_HEIGHT] = {

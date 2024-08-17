@@ -55,4 +55,4 @@ dkms.conf
 val.txt
 bin/
 *.s
-!./libraylib.a
+!libraylib.a

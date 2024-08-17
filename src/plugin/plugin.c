@@ -20,9 +20,9 @@
 
 #define EPS 1e-6f
 
-#define GRAVITY 10
+#define GRAVITY 5
 
-#define PLAYER_JUMP_SPEED -5
+#define PLAYER_JUMP_SPEED -3
 
 static struct plug_State *plug_state = NULL;
 static Texture2D tex;
@@ -35,7 +35,7 @@ void plug_init(void) {
 
   load_resources(plug_state);
 
-  plug_state->player.grounded = true;
+  plug_state->player.grounded = false;
   plug_state->player.hitbox = CLITERAL(Rectangle){
     .x = 3.0f * (PLAYER_SIZE / (float)ATLAS_GRID_SIZE),
     .y = 3.0f * (PLAYER_SIZE / (float)ATLAS_GRID_SIZE),
@@ -102,15 +102,21 @@ static bool point_inside_aabb(Rectangle aabb, Vector2 p) {
   return true;
 }
 
-static bool level_collide(struct plug_State *state, bool *is_grounded) {
+static bool aabb_collision(vec2 aabb1[2], vec2 aabb2[2]) {
+  return !(aabb1[0][0] > aabb2[1][0] || aabb1[1][0] < aabb2[0][0] ||
+           aabb1[0][1] > aabb2[1][1] || aabb1[1][1] < aabb2[0][1]);
+}
+
+static void level_collide(struct plug_State *state, bool *is_grounded) {
   if (state->current_level < 0) {
-    return false;
+    return;
   }
 
   struct plug_Level *level =
     &DA_AT(state->levels, (uint32_t)state->current_level);
   struct plug_Player *player = &state->player;
 
+  bool did_collide = false;
   for (uint32_t y = 0; y < level->grid_height; y++) {
     for (uint32_t x = 0; x < level->grid_width; x++) {
       uint32_t grid_index = y * level->grid_width + x;
@@ -149,11 +155,23 @@ static bool level_collide(struct plug_State *state, bool *is_grounded) {
         },
       };
 
-      bool aabb_inter = glm_aabb2d_aabb(grid_aabb, player_aabb);
+      bool aabb_inter = aabb_collision(grid_aabb, player_aabb);
       if (!aabb_inter) {
         continue;
+      } else {
+        player->vel.y = 0;
+        //player->vel.x = 0;
+
+        *is_grounded = true;
+        did_collide = true;
+        //BeginDrawing();
+        //BeginMode2D(state->player.camera);
+        //DrawRectangleRec(cell_rect, BLUE);
+        //EndMode2D();
+        //EndDrawing();
       }
 
+#if 0
       if (!(glm_aabb2d_contains(grid_aabb, player_aabb) ||
             glm_aabb2d_contains(player_aabb, grid_aabb))) {
         // Top-left
@@ -198,10 +216,13 @@ static bool level_collide(struct plug_State *state, bool *is_grounded) {
 
       } else {
       }
+#endif
     }
   }
 
-  return true;
+  if (!did_collide) {
+    *is_grounded = false;
+  }
 }
 
 static void update_player(struct plug_State *state) {
@@ -220,9 +241,10 @@ static void update_player(struct plug_State *state) {
     state->player.vel.y = PLAYER_JUMP_SPEED;
   }
 
-  // TODO: Gravity
-  state->player.vel.y += GRAVITY * GetFrameTime();
-  state->player.vel.y = fmin(state->player.vel.y, PLAYER_GRAV_TERMINAL_SPEED);
+  if (!state->player.grounded) {
+    state->player.vel.y += GRAVITY * GetFrameTime();
+    state->player.vel.y = fmin(state->player.vel.y, PLAYER_GRAV_TERMINAL_SPEED);
+  }
 
   state->player.pos.x += state->player.vel.x;
   state->player.pos.y += state->player.vel.y;
@@ -266,7 +288,6 @@ void plug_update(void) {
   char fps_str[6] = { 0 };
   snprintf(fps_str, sizeof(fps_str), "%.2f", fps);
 
-  update_player(plug_state);
   //printf("%f\n", plug_state->player.vel.y);
 
   BeginDrawing();
@@ -288,6 +309,8 @@ void plug_update(void) {
   }
 
   EndMode2D();
+
+  update_player(plug_state);
 
   DrawText(fps_str, 0, 0, 20, BLACK);
   EndDrawing();

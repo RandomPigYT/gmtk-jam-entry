@@ -89,7 +89,7 @@ void load_level(struct plug_State *state) {
 
       Rectangle dest = {
         .x = x * level->cell_size,
-        .y = (level->grid_height - y) * level->cell_size,
+        .y = (level->grid_height - y - 1) * level->cell_size,
         .width = level->cell_size,
         .height = level->cell_size,
       };

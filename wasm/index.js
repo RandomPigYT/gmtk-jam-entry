@@ -35,7 +35,7 @@ if (ENVIRONMENT_IS_NODE) {
 
 // --pre-jses are emitted after the Module integration code, so that they can
 // refer to Module (if they choose; they can also define Module)
-// include: /tmp/tmp2iq59j0d.js
+// include: /tmp/tmpp93w6o2f.js
 
   if (!Module.expectedDataFileDownloads) {
     Module.expectedDataFileDownloads = 0;
@@ -216,11 +216,11 @@ Module['FS_createPath']("/", "assets", true, true);
     }
 
     }
-    loadPackage({"files": [{"filename": "/assets/NewerCampFire_2.png", "start": 0, "end": 11166}, {"filename": "/assets/gmtk-texture-atlas.png", "start": 11166, "end": 12060}, {"filename": "/index.data", "start": 12060, "end": 23226}, {"filename": "/index.html", "start": 23226, "end": 23899}, {"filename": "/index.js", "start": 23899, "end": 372879}, {"filename": "/index.wasm", "start": 372879, "end": 847884}], "remote_package_size": 847884});
+    loadPackage({"files": [{"filename": "/assets/NewerCampFire_2.png", "start": 0, "end": 11166}, {"filename": "/assets/gmtk-texture-atlas.png", "start": 11166, "end": 12179}, {"filename": "/index.data", "start": 12179, "end": 23345}, {"filename": "/index.html", "start": 23345, "end": 24013}, {"filename": "/index.js", "start": 24013, "end": 372993}, {"filename": "/index.wasm", "start": 372993, "end": 847998}], "remote_package_size": 847998});
 
   })();
 
-// end include: /tmp/tmp2iq59j0d.js
+// end include: /tmp/tmpp93w6o2f.js
 
 
 // Sometimes an existing Module object exists with properties
@@ -828,40 +828,40 @@ var tempI64;
 // === Body ===
 
 var ASM_CONSTS = {
-  24096: () => { if (document.fullscreenElement) return 1; },  
- 24142: () => { return document.getElementById('canvas').width; },  
- 24194: () => { return parseInt(document.getElementById('canvas').style.width); },  
- 24262: () => { document.exitFullscreen(); },  
- 24289: () => { setTimeout(function() { Module.requestFullscreen(false, false); }, 100); },  
- 24362: () => { if (document.fullscreenElement) return 1; },  
- 24408: () => { return document.getElementById('canvas').width; },  
- 24460: () => { return screen.width; },  
- 24485: () => { document.exitFullscreen(); },  
- 24512: () => { setTimeout(function() { Module.requestFullscreen(false, true); setTimeout(function() { canvas.style.width="unset"; }, 100); }, 100); },  
- 24645: () => { if (document.fullscreenElement) return 1; },  
- 24691: () => { return document.getElementById('canvas').width; },  
- 24743: () => { return parseInt(document.getElementById('canvas').style.width); },  
- 24811: () => { if (document.fullscreenElement) return 1; },  
- 24857: () => { return document.getElementById('canvas').width; },  
- 24909: () => { return screen.width; },  
- 24934: () => { if (document.fullscreenElement) return 1; },  
- 24980: () => { return document.getElementById('canvas').width; },  
- 25032: () => { return screen.width; },  
- 25057: () => { document.exitFullscreen(); },  
- 25084: () => { if (document.fullscreenElement) return 1; },  
- 25130: () => { return document.getElementById('canvas').width; },  
- 25182: () => { return parseInt(document.getElementById('canvas').style.width); },  
- 25250: () => { document.exitFullscreen(); },  
- 25277: () => { return screen.width; },  
- 25302: () => { return screen.height; },  
- 25328: () => { return window.screenX; },  
- 25355: () => { return window.screenY; },  
- 25382: ($0) => { navigator.clipboard.writeText(UTF8ToString($0)); },  
- 25435: ($0) => { document.getElementById("canvas").style.cursor = UTF8ToString($0); },  
- 25506: () => { document.getElementById('canvas').style.cursor = 'none'; },  
- 25563: ($0) => { document.getElementById('canvas').style.cursor = UTF8ToString($0); },  
- 25634: () => { if (document.fullscreenElement) return 1; },  
- 25680: () => { if (document.pointerLockElement) return 1; }
+  24112: () => { if (document.fullscreenElement) return 1; },  
+ 24158: () => { return document.getElementById('canvas').width; },  
+ 24210: () => { return parseInt(document.getElementById('canvas').style.width); },  
+ 24278: () => { document.exitFullscreen(); },  
+ 24305: () => { setTimeout(function() { Module.requestFullscreen(false, false); }, 100); },  
+ 24378: () => { if (document.fullscreenElement) return 1; },  
+ 24424: () => { return document.getElementById('canvas').width; },  
+ 24476: () => { return screen.width; },  
+ 24501: () => { document.exitFullscreen(); },  
+ 24528: () => { setTimeout(function() { Module.requestFullscreen(false, true); setTimeout(function() { canvas.style.width="unset"; }, 100); }, 100); },  
+ 24661: () => { if (document.fullscreenElement) return 1; },  
+ 24707: () => { return document.getElementById('canvas').width; },  
+ 24759: () => { return parseInt(document.getElementById('canvas').style.width); },  
+ 24827: () => { if (document.fullscreenElement) return 1; },  
+ 24873: () => { return document.getElementById('canvas').width; },  
+ 24925: () => { return screen.width; },  
+ 24950: () => { if (document.fullscreenElement) return 1; },  
+ 24996: () => { return document.getElementById('canvas').width; },  
+ 25048: () => { return screen.width; },  
+ 25073: () => { document.exitFullscreen(); },  
+ 25100: () => { if (document.fullscreenElement) return 1; },  
+ 25146: () => { return document.getElementById('canvas').width; },  
+ 25198: () => { return parseInt(document.getElementById('canvas').style.width); },  
+ 25266: () => { document.exitFullscreen(); },  
+ 25293: () => { return screen.width; },  
+ 25318: () => { return screen.height; },  
+ 25344: () => { return window.screenX; },  
+ 25371: () => { return window.screenY; },  
+ 25398: ($0) => { navigator.clipboard.writeText(UTF8ToString($0)); },  
+ 25451: ($0) => { document.getElementById("canvas").style.cursor = UTF8ToString($0); },  
+ 25522: () => { document.getElementById('canvas').style.cursor = 'none'; },  
+ 25579: ($0) => { document.getElementById('canvas').style.cursor = UTF8ToString($0); },  
+ 25650: () => { if (document.fullscreenElement) return 1; },  
+ 25696: () => { if (document.pointerLockElement) return 1; }
 };
 function GetWindowInnerWidth() { return window.innerWidth; }
 function GetWindowInnerHeight() { return window.innerHeight; }

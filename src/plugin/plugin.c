@@ -107,6 +107,60 @@ static bool aabb_collision(vec2 aabb1[2], vec2 aabb2[2]) {
            aabb1[0][1] > aabb2[1][1] || aabb1[1][1] < aabb2[0][1]);
 }
 
+static inline bool is_zero(float n, float eps) {
+  return n < eps && n > -eps;
+}
+
+static bool intersect_line_segments(const vec4 line1[2], const vec4 line2[2],
+                                    vec4 intersection, float *t) {
+  vec2 p = { line1[0][0], line1[0][2] };
+  vec2 q = { line2[0][0], line2[0][2] };
+
+  vec2 r = {
+    line1[1][0] - line1[0][0],
+    line1[1][2] - line1[0][2],
+  };
+
+  vec2 s = {
+    line2[1][0] - line2[0][0],
+    line2[1][2] - line2[0][2],
+  };
+
+  float r_cross_s = glm_vec2_cross(r, s);
+  if (is_zero(r_cross_s, EPS)) {
+    intersection[0] = INFINITY;
+    intersection[2] = INFINITY;
+
+    return false;
+  }
+
+  vec2 q_sub_p;
+  glm_vec2_sub(q, p, q_sub_p);
+
+  float q_sub_p_cross_s = glm_vec2_cross(q_sub_p, s);
+  float q_sub_p_cross_r = glm_vec2_cross(q_sub_p, r);
+
+  *t = q_sub_p_cross_s / r_cross_s;
+  float u = q_sub_p_cross_r / r_cross_s;
+
+  if (!(*t >= 0.0f && *t <= 1.0f && u >= 0.0f && u <= 1.0f)) {
+    intersection[0] = INFINITY;
+    intersection[2] = INFINITY;
+
+    return false;
+  }
+
+  intersection[0] = p[0] + r[0] * *t;
+  intersection[2] = p[1] + r[1] * *t;
+
+  return true;
+}
+
+static void resolve_with_diags(struct plug_State *state, vec2 grid_aabb[2],
+                               vec2 player_aabb[2]) {
+  // TODO: Do this
+}
+
 static void level_collide(struct plug_State *state, bool *is_grounded) {
   if (state->current_level < 0) {
     return;
@@ -117,6 +171,7 @@ static void level_collide(struct plug_State *state, bool *is_grounded) {
   struct plug_Player *player = &state->player;
 
   bool did_collide = false;
+  Vector2 res_vector = { 0 };
   for (uint32_t y = 0; y < level->grid_height; y++) {
     for (uint32_t x = 0; x < level->grid_width; x++) {
       uint32_t grid_index = y * level->grid_width + x;
@@ -158,65 +213,15 @@ static void level_collide(struct plug_State *state, bool *is_grounded) {
       bool aabb_inter = aabb_collision(grid_aabb, player_aabb);
       if (!aabb_inter) {
         continue;
-      } else {
-        player->vel.y = 0;
-        //player->vel.x = 0;
-
-        *is_grounded = true;
-        did_collide = true;
-        //BeginDrawing();
-        //BeginMode2D(state->player.camera);
-        //DrawRectangleRec(cell_rect, BLUE);
-        //EndMode2D();
-        //EndDrawing();
       }
 
-#if 0
-      if (!(glm_aabb2d_contains(grid_aabb, player_aabb) ||
-            glm_aabb2d_contains(player_aabb, grid_aabb))) {
-        // Top-left
-        if (player_aabb[0][0] >= grid_aabb[0][0]) {
-          float dx = grid_aabb[1][0] - player_aabb[0][0];
+      Vector2 dv = { 0 };
 
-          if (player->vel.x < 0) {
-            player->pos.x += dx;
-          }
+      player->vel.y = 0;
+      //player->vel.x = 0;
 
-          player->vel.x = 0.0f;
-        }
-
-        if (player_aabb[1][0] <= grid_aabb[1][0]) {
-          float dx = player_aabb[1][0] - grid_aabb[0][0];
-
-          if (player->vel.x >= 0) {
-            player->pos.x -= dx;
-          }
-
-          player->vel.x = 0.0f;
-        }
-
-        if (player_aabb[0][1] >= grid_aabb[0][1]) {
-          float dy = grid_aabb[1][1] - player_aabb[0][1];
-
-          if (player->vel.y < 0) {
-            player->pos.y += dy;
-          }
-          player->vel.y = 0.0f;
-        }
-
-        if (player_aabb[1][1] <= grid_aabb[1][1]) {
-          float dy = player_aabb[1][1] - grid_aabb[0][1];
-
-          if (player->vel.y >= 0) {
-            player->pos.y -= dy;
-            *is_grounded = true;
-          }
-          player->vel.y = 0.0f;
-        }
-
-      } else {
-      }
-#endif
+      *is_grounded = true;
+      did_collide = true;
     }
   }
 

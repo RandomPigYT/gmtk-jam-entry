@@ -11,7 +11,7 @@
 #include <math.h>
 
 #define PLAYER_TERMINAL_SPEED 5
-#define PLAYER_GRAV_TERMINAL_SPEED 300.0f
+#define PLAYER_GRAV_TERMINAL_SPEED 75
 #define PLAYER_SPRITE_X 0
 #define PLAYER_SPRITE_Y (ATLAS_GRID_SIZE * 4)
 #define PLAYER_SIZE 20
@@ -20,9 +20,9 @@
 
 #define EPS 1e-6f
 
-#define GRAVITY -15
+#define GRAVITY 10
 
-#define PLAYER_JUMP_SPEED (2 * GRAVITY)
+#define PLAYER_JUMP_SPEED -5
 
 static struct plug_State *plug_state = NULL;
 static Texture2D tex;
@@ -82,7 +82,126 @@ static void draw_level(struct plug_State *state) {
   DrawTextureV(level->grid_tex.texture, level->pos, WHITE);
 }
 
-static void level_collide(struct plug_State *state) {
+static bool point_inside_aabb(Rectangle aabb, Vector2 p) {
+  if (p.x < aabb.x) {
+    return false;
+  }
+
+  if (p.x > aabb.x + aabb.width) {
+    return false;
+  }
+
+  if (p.y < aabb.y) {
+    return false;
+  }
+
+  if (p.y > aabb.y + aabb.height) {
+    return false;
+  }
+
+  return true;
+}
+
+static bool level_collide(struct plug_State *state, bool *is_grounded) {
+  if (state->current_level < 0) {
+    return false;
+  }
+
+  struct plug_Level *level =
+    &DA_AT(state->levels, (uint32_t)state->current_level);
+  struct plug_Player *player = &state->player;
+
+  for (uint32_t y = 0; y < level->grid_height; y++) {
+    for (uint32_t x = 0; x < level->grid_width; x++) {
+      uint32_t grid_index = y * level->grid_width + x;
+
+      if (level->grid[grid_index] == 0) {
+        continue;
+      }
+
+      Rectangle cell_rect = {
+        .x = level->pos.x + (x * level->cell_size),
+        .y = level->pos.y + (y * level->cell_size),
+        .width = level->cell_size,
+        .height = level->cell_size,
+      };
+
+      vec2 grid_aabb[2] = {
+        {
+          cell_rect.x,
+          cell_rect.y,
+        },
+        {
+          cell_rect.x + cell_rect.width,
+          cell_rect.y + cell_rect.height,
+        },
+      };
+
+      Rectangle *hitbox = &player->hitbox;
+      vec2 player_aabb[2] = {
+        {
+          player->pos.x + hitbox->x,
+          player->pos.y + hitbox->y,
+        },
+        {
+          player->pos.x + hitbox->x + hitbox->width,
+          player->pos.y + hitbox->y + hitbox->height,
+        },
+      };
+
+      bool aabb_inter = glm_aabb2d_aabb(grid_aabb, player_aabb);
+      if (!aabb_inter) {
+        continue;
+      }
+
+      if (!(glm_aabb2d_contains(grid_aabb, player_aabb) ||
+            glm_aabb2d_contains(player_aabb, grid_aabb))) {
+        // Top-left
+        if (player_aabb[0][0] >= grid_aabb[0][0]) {
+          float dx = grid_aabb[1][0] - player_aabb[0][0];
+
+          if (player->vel.x < 0) {
+            player->pos.x += dx;
+          }
+
+          player->vel.x = 0.0f;
+        }
+
+        if (player_aabb[1][0] <= grid_aabb[1][0]) {
+          float dx = player_aabb[1][0] - grid_aabb[0][0];
+
+          if (player->vel.x >= 0) {
+            player->pos.x -= dx;
+          }
+
+          player->vel.x = 0.0f;
+        }
+
+        if (player_aabb[0][1] >= grid_aabb[0][1]) {
+          float dy = grid_aabb[1][1] - player_aabb[0][1];
+
+          if (player->vel.y < 0) {
+            player->pos.y += dy;
+          }
+          player->vel.y = 0.0f;
+        }
+
+        if (player_aabb[1][1] <= grid_aabb[1][1]) {
+          float dy = player_aabb[1][1] - grid_aabb[0][1];
+
+          if (player->vel.y >= 0) {
+            player->pos.y -= dy;
+            *is_grounded = true;
+          }
+          player->vel.y = 0.0f;
+        }
+
+      } else {
+      }
+    }
+  }
+
+  return true;
 }
 
 static void update_player(struct plug_State *state) {
@@ -102,9 +221,13 @@ static void update_player(struct plug_State *state) {
   }
 
   // TODO: Gravity
+  state->player.vel.y += GRAVITY * GetFrameTime();
+  state->player.vel.y = fmin(state->player.vel.y, PLAYER_GRAV_TERMINAL_SPEED);
 
   state->player.pos.x += state->player.vel.x;
   state->player.pos.y += state->player.vel.y;
+
+  level_collide(state, &state->player.grounded);
 
   state->player.camera.target.x = state->player.pos.x + (PLAYER_SIZE / 2);
   state->player.camera.target.y = state->player.pos.y + (PLAYER_SIZE / 2);
@@ -144,6 +267,7 @@ void plug_update(void) {
   snprintf(fps_str, sizeof(fps_str), "%.2f", fps);
 
   update_player(plug_state);
+  //printf("%f\n", plug_state->player.vel.y);
 
   BeginDrawing();
   ClearBackground(GetColor(0x33c6f2ff));
@@ -152,7 +276,6 @@ void plug_update(void) {
 
   draw_level(plug_state);
   draw_player(plug_state);
-  DrawCircleV(plug_state->player.camera.target, 2, BLUE);
 
   {
     Rectangle r = {

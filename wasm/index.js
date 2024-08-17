@@ -35,7 +35,7 @@ if (ENVIRONMENT_IS_NODE) {
 
 // --pre-jses are emitted after the Module integration code, so that they can
 // refer to Module (if they choose; they can also define Module)
-// include: /tmp/tmpvf22bxvw.js
+// include: /tmp/tmpiz4xj2n6.js
 
   if (!Module.expectedDataFileDownloads) {
     Module.expectedDataFileDownloads = 0;
@@ -216,11 +216,11 @@ Module['FS_createPath']("/", "assets", true, true);
     }
 
     }
-    loadPackage({"files": [{"filename": "/assets/NewerCampFire_2.png", "start": 0, "end": 11166}], "remote_package_size": 11166});
+    loadPackage({"files": [{"filename": "/assets/NewerCampFire_2.png", "start": 0, "end": 11166}, {"filename": "/assets/gmtk-texture-atlas.png", "start": 11166, "end": 12060}, {"filename": "/index.data", "start": 12060, "end": 23226}, {"filename": "/index.html", "start": 23226, "end": 23700}, {"filename": "/index.js", "start": 23700, "end": 372156}, {"filename": "/index.wasm", "start": 372156, "end": 840732}], "remote_package_size": 840732});
 
   })();
 
-// end include: /tmp/tmpvf22bxvw.js
+// end include: /tmp/tmpiz4xj2n6.js
 
 
 // Sometimes an existing Module object exists with properties
@@ -828,40 +828,40 @@ var tempI64;
 // === Body ===
 
 var ASM_CONSTS = {
-  23056: () => { if (document.fullscreenElement) return 1; },  
- 23102: () => { return document.getElementById('canvas').width; },  
- 23154: () => { return parseInt(document.getElementById('canvas').style.width); },  
- 23222: () => { document.exitFullscreen(); },  
- 23249: () => { setTimeout(function() { Module.requestFullscreen(false, false); }, 100); },  
- 23322: () => { if (document.fullscreenElement) return 1; },  
- 23368: () => { return document.getElementById('canvas').width; },  
- 23420: () => { return screen.width; },  
- 23445: () => { document.exitFullscreen(); },  
- 23472: () => { setTimeout(function() { Module.requestFullscreen(false, true); setTimeout(function() { canvas.style.width="unset"; }, 100); }, 100); },  
- 23605: () => { if (document.fullscreenElement) return 1; },  
- 23651: () => { return document.getElementById('canvas').width; },  
- 23703: () => { return parseInt(document.getElementById('canvas').style.width); },  
- 23771: () => { if (document.fullscreenElement) return 1; },  
- 23817: () => { return document.getElementById('canvas').width; },  
- 23869: () => { return screen.width; },  
- 23894: () => { if (document.fullscreenElement) return 1; },  
- 23940: () => { return document.getElementById('canvas').width; },  
- 23992: () => { return screen.width; },  
- 24017: () => { document.exitFullscreen(); },  
- 24044: () => { if (document.fullscreenElement) return 1; },  
- 24090: () => { return document.getElementById('canvas').width; },  
- 24142: () => { return parseInt(document.getElementById('canvas').style.width); },  
- 24210: () => { document.exitFullscreen(); },  
- 24237: () => { return screen.width; },  
- 24262: () => { return screen.height; },  
- 24288: () => { return window.screenX; },  
- 24315: () => { return window.screenY; },  
- 24342: ($0) => { navigator.clipboard.writeText(UTF8ToString($0)); },  
- 24395: ($0) => { document.getElementById("canvas").style.cursor = UTF8ToString($0); },  
- 24466: () => { document.getElementById('canvas').style.cursor = 'none'; },  
- 24523: ($0) => { document.getElementById('canvas').style.cursor = UTF8ToString($0); },  
- 24594: () => { if (document.fullscreenElement) return 1; },  
- 24640: () => { if (document.pointerLockElement) return 1; }
+  24096: () => { if (document.fullscreenElement) return 1; },  
+ 24142: () => { return document.getElementById('canvas').width; },  
+ 24194: () => { return parseInt(document.getElementById('canvas').style.width); },  
+ 24262: () => { document.exitFullscreen(); },  
+ 24289: () => { setTimeout(function() { Module.requestFullscreen(false, false); }, 100); },  
+ 24362: () => { if (document.fullscreenElement) return 1; },  
+ 24408: () => { return document.getElementById('canvas').width; },  
+ 24460: () => { return screen.width; },  
+ 24485: () => { document.exitFullscreen(); },  
+ 24512: () => { setTimeout(function() { Module.requestFullscreen(false, true); setTimeout(function() { canvas.style.width="unset"; }, 100); }, 100); },  
+ 24645: () => { if (document.fullscreenElement) return 1; },  
+ 24691: () => { return document.getElementById('canvas').width; },  
+ 24743: () => { return parseInt(document.getElementById('canvas').style.width); },  
+ 24811: () => { if (document.fullscreenElement) return 1; },  
+ 24857: () => { return document.getElementById('canvas').width; },  
+ 24909: () => { return screen.width; },  
+ 24934: () => { if (document.fullscreenElement) return 1; },  
+ 24980: () => { return document.getElementById('canvas').width; },  
+ 25032: () => { return screen.width; },  
+ 25057: () => { document.exitFullscreen(); },  
+ 25084: () => { if (document.fullscreenElement) return 1; },  
+ 25130: () => { return document.getElementById('canvas').width; },  
+ 25182: () => { return parseInt(document.getElementById('canvas').style.width); },  
+ 25250: () => { document.exitFullscreen(); },  
+ 25277: () => { return screen.width; },  
+ 25302: () => { return screen.height; },  
+ 25328: () => { return window.screenX; },  
+ 25355: () => { return window.screenY; },  
+ 25382: ($0) => { navigator.clipboard.writeText(UTF8ToString($0)); },  
+ 25435: ($0) => { document.getElementById("canvas").style.cursor = UTF8ToString($0); },  
+ 25506: () => { document.getElementById('canvas').style.cursor = 'none'; },  
+ 25563: ($0) => { document.getElementById('canvas').style.cursor = UTF8ToString($0); },  
+ 25634: () => { if (document.fullscreenElement) return 1; },  
+ 25680: () => { if (document.pointerLockElement) return 1; }
 };
 function GetWindowInnerWidth() { return window.innerWidth; }
 function GetWindowInnerHeight() { return window.innerHeight; }
@@ -7395,6 +7395,14 @@ function GetWindowInnerHeight() { return window.innerHeight; }
 
 
 
+
+
+
+
+
+
+
+
   
   
   
@@ -9108,6 +9116,10 @@ var wasmImports = {
   /** @export */
   glBindBuffer: _glBindBuffer,
   /** @export */
+  glBindFramebuffer: _glBindFramebuffer,
+  /** @export */
+  glBindRenderbuffer: _glBindRenderbuffer,
+  /** @export */
   glBindTexture: _glBindTexture,
   /** @export */
   glBlendFunc: _glBlendFunc,
@@ -9115,6 +9127,8 @@ var wasmImports = {
   glBufferData: _glBufferData,
   /** @export */
   glBufferSubData: _glBufferSubData,
+  /** @export */
+  glCheckFramebufferStatus: _glCheckFramebufferStatus,
   /** @export */
   glClear: _glClear,
   /** @export */
@@ -9146,9 +9160,17 @@ var wasmImports = {
   /** @export */
   glEnableVertexAttribArray: _glEnableVertexAttribArray,
   /** @export */
+  glFramebufferRenderbuffer: _glFramebufferRenderbuffer,
+  /** @export */
+  glFramebufferTexture2D: _glFramebufferTexture2D,
+  /** @export */
   glFrontFace: _glFrontFace,
   /** @export */
   glGenBuffers: _glGenBuffers,
+  /** @export */
+  glGenFramebuffers: _glGenFramebuffers,
+  /** @export */
+  glGenRenderbuffers: _glGenRenderbuffers,
   /** @export */
   glGenTextures: _glGenTextures,
   /** @export */
@@ -9173,6 +9195,8 @@ var wasmImports = {
   glPixelStorei: _glPixelStorei,
   /** @export */
   glReadPixels: _glReadPixels,
+  /** @export */
+  glRenderbufferStorage: _glRenderbufferStorage,
   /** @export */
   glShaderSource: _glShaderSource,
   /** @export */
@@ -9240,9 +9264,9 @@ var wasmImports = {
 };
 var wasmExports = createWasm();
 var ___wasm_call_ctors = () => (___wasm_call_ctors = wasmExports['__wasm_call_ctors'])();
+var _free = (a0) => (_free = wasmExports['free'])(a0);
 var _main = Module['_main'] = (a0, a1) => (_main = Module['_main'] = wasmExports['main'])(a0, a1);
 var _malloc = (a0) => (_malloc = wasmExports['malloc'])(a0);
-var _free = (a0) => (_free = wasmExports['free'])(a0);
 var __emscripten_stack_restore = (a0) => (__emscripten_stack_restore = wasmExports['_emscripten_stack_restore'])(a0);
 var __emscripten_stack_alloc = (a0) => (__emscripten_stack_alloc = wasmExports['_emscripten_stack_alloc'])(a0);
 var _emscripten_stack_get_current = () => (_emscripten_stack_get_current = wasmExports['emscripten_stack_get_current'])();

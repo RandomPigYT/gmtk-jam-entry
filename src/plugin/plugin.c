@@ -86,7 +86,7 @@ static void draw_level(struct plug_State *state) {
   DrawTextureV(level->grid_tex.texture, level->pos, WHITE);
 }
 
-static bool point_inside_aabb(Rectangle aabb, Vector2 p) {
+[[maybe_unused]] static bool point_inside_aabb(Rectangle aabb, Vector2 p) {
   if (p.x < aabb.x) {
     return false;
   }
@@ -106,7 +106,7 @@ static bool point_inside_aabb(Rectangle aabb, Vector2 p) {
   return true;
 }
 
-static bool aabb_collision(vec2 aabb1[2], vec2 aabb2[2]) {
+[[maybe_unused]] static bool aabb_collision(vec2 aabb1[2], vec2 aabb2[2]) {
   return !(aabb1[0][0] > aabb2[1][0] || aabb1[1][0] < aabb2[0][0] ||
            aabb1[0][1] > aabb2[1][1] || aabb1[1][1] < aabb2[0][1]);
 }
@@ -115,8 +115,10 @@ static inline bool is_zero(float n, float eps) {
   return n < eps && n > -eps;
 }
 
-static bool intersect_line_segments(const vec2 line1[2], const vec2 line2[2],
-                                    vec2 intersection, float *t) {
+[[maybe_unused]] static bool intersect_line_segments(const vec2 line1[2],
+                                                     const vec2 line2[2],
+                                                     vec2 intersection,
+                                                     float *t) {
   vec2 p = { line1[0][0], line1[0][1] };
   vec2 q = { line2[0][0], line2[0][1] };
 
@@ -177,13 +179,6 @@ static float resolve_collision(vec2 player_aabb[2], vec2 grid_aabb[2],
       grid_aabb[1][0] - player_aabb[0][0],
       grid_aabb[1][1] - player_aabb[0][1],
     },
-  };
-
-  Rectangle m = {
-    .x = minkowski_aabb[0][0],
-    .y = minkowski_aabb[0][1],
-    .width = minkowski_aabb[1][0] - minkowski_aabb[0][0],
-    .height = minkowski_aabb[1][1] - minkowski_aabb[0][1],
   };
 
   vec2 raydir;
@@ -250,10 +245,6 @@ static void level_collide(struct plug_State *state, bool *is_grounded) {
     &DA_AT(state->levels, (uint32_t)state->current_level);
   struct plug_Player *player = &state->player;
 
-  bool did_feet_collide = false;
-  vec2 res_vector = { 0 };
-
-  float min_t = 1.0f;
   vec2 min_t_xy = { 1.0f, 1.0f };
 
   for (uint32_t y = 0; y < level->grid_height; y++) {
@@ -283,13 +274,6 @@ static void level_collide(struct plug_State *state, bool *is_grounded) {
       };
 
       Rectangle *hitbox = &player->hitbox;
-      Rectangle player_rect = {
-        .x = player->pos.x + hitbox->x,
-        .y = player->pos.y + hitbox->y,
-
-        .width = hitbox->width,
-        .height = hitbox->height,
-      };
 
       vec2 player_aabb[2] = {
         {
@@ -311,10 +295,7 @@ static void level_collide(struct plug_State *state, bool *is_grounded) {
       min_t_xy[0] = t_xy[0] < min_t_xy[0] ? t_xy[0] : min_t_xy[0];
       min_t_xy[1] = t_xy[1] < min_t_xy[1] ? t_xy[1] : min_t_xy[1];
 
-      //if (!is_zero(res_vector[0], EPS) && !is_zero(res_vector[1], EPS)) {
-      //  player->vel.x = 0;
-      //  player->vel.y = 0;
-      //}
+#if 0
 
       vec2 feet_hitbxox[2] = {
         {
@@ -330,14 +311,6 @@ static void level_collide(struct plug_State *state, bool *is_grounded) {
         },
       };
 
-      Rectangle feet_rect = {
-        .x = player_rect.x,
-        .y = player_rect.y + player_rect.height,
-
-        .width = player_rect.width,
-        .height = PLAYER_FEET_HITBOX_WIDTH_FACT,
-      };
-
       bool feet_inter = aabb_collision(feet_hitbxox, grid_aabb);
       //printf("%d\n", feet_inter);
       if (feet_inter) {
@@ -349,13 +322,20 @@ static void level_collide(struct plug_State *state, bool *is_grounded) {
       } else if (!feet_inter && !did_feet_collide) {
         *is_grounded = false;
       }
+#endif
     }
   }
 
   //player->pos.x += min_t_xy[0] * player->vel.x;
   //player->pos.y += min_t_xy[1] * player->vel.y;
-  player->pos.x += min_t_xy[0] * player->vel.x;
-  player->pos.y += min_t_xy[1] * player->vel.y;
+
+  *is_grounded = is_zero(min_t_xy[1], EPS) ? true : false;
+
+  player->vel.x *= min_t_xy[0];
+  player->vel.y *= min_t_xy[1];
+
+  player->pos.x += player->vel.x;
+  player->pos.y += player->vel.y;
 }
 
 static void update_player(struct plug_State *state) {

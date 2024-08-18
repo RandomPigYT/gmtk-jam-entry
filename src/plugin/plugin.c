@@ -254,6 +254,7 @@ static void level_collide(struct plug_State *state, bool *is_grounded) {
   vec2 res_vector = { 0 };
 
   float min_t = 1.0f;
+  vec2 min_t_xy = { 1.0f, 1.0f };
 
   for (uint32_t y = 0; y < level->grid_height; y++) {
     for (uint32_t x = 0; x < level->grid_width; x++) {
@@ -301,10 +302,14 @@ static void level_collide(struct plug_State *state, bool *is_grounded) {
         },
       };
 
-      float t = resolve_collision(player_aabb, grid_aabb,
-                                  (vec2){ player->vel.x, player->vel.y });
+      vec2 t_xy = { 0 };
+      t_xy[0] = resolve_collision(player_aabb, grid_aabb,
+                                  (vec2){ player->vel.x, 0.0f });
+      t_xy[1] = resolve_collision(player_aabb, grid_aabb,
+                                  (vec2){ 0.0f, player->vel.y });
 
-      min_t = t < min_t ? t : min_t;
+      min_t_xy[0] = t_xy[0] < min_t_xy[0] ? t_xy[0] : min_t_xy[0];
+      min_t_xy[1] = t_xy[1] < min_t_xy[1] ? t_xy[1] : min_t_xy[1];
 
       //if (!is_zero(res_vector[0], EPS) && !is_zero(res_vector[1], EPS)) {
       //  player->vel.x = 0;
@@ -337,7 +342,7 @@ static void level_collide(struct plug_State *state, bool *is_grounded) {
       //printf("%d\n", feet_inter);
       if (feet_inter) {
         *is_grounded = true;
-        player->vel.y = 0;
+        ///player->vel.y = 0;
 
         did_feet_collide = true;
 
@@ -347,10 +352,10 @@ static void level_collide(struct plug_State *state, bool *is_grounded) {
     }
   }
 
-  player->pos.x += min_t * player->vel.x;
-  if (!*is_grounded) {
-    player->pos.y += min_t * player->vel.y;
-  }
+  //player->pos.x += min_t_xy[0] * player->vel.x;
+  //player->pos.y += min_t_xy[1] * player->vel.y;
+  player->pos.x += min_t_xy[0] * player->vel.x;
+  player->pos.y += min_t_xy[1] * player->vel.y;
 }
 
 static void update_player(struct plug_State *state) {
@@ -378,10 +383,8 @@ static void update_player(struct plug_State *state) {
     state->player.vel.y = PLAYER_JUMP_SPEED;
   }
 
-  if (!state->player.grounded) {
-    state->player.vel.y += GRAVITY * GetFrameTime();
-    state->player.vel.y = fmin(state->player.vel.y, PLAYER_GRAV_TERMINAL_SPEED);
-  }
+  state->player.vel.y += GRAVITY * GetFrameTime();
+  state->player.vel.y = fmin(state->player.vel.y, PLAYER_GRAV_TERMINAL_SPEED);
 
   level_collide(state, &state->player.grounded);
 
@@ -447,7 +450,7 @@ void plug_update(void) {
       .width = plug_state->player.hitbox.width,
       .height = plug_state->player.hitbox.height,
     };
-    DrawRectangleLinesEx(r, 0.5f, BLACK);
+    DrawRectangleLinesEx(r, 0.5f, RED);
   }
   update_player(plug_state);
   DrawCircleV((Vector2){ 0, 0 }, 1, BLUE);

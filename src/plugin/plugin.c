@@ -20,7 +20,8 @@
 
 #define EPS 1e-6f
 
-#define PLAYER_FEET_HITBOX_SIZE 0.0001
+#define PLAYER_FEET_HITBOX_HEIGHT EPS
+#define PLAYER_FEET_HITBOX_WIDTH_FACT 0.8f
 
 #define GRAVITY 5
 
@@ -38,6 +39,7 @@ void plug_init(void) {
   load_resources(plug_state);
 
   plug_state->player.grounded = false;
+  plug_state->player.pos.y = 40;
   plug_state->player.hitbox = CLITERAL(Rectangle){
     .x = 3.0f * (PLAYER_SIZE / (float)ATLAS_GRID_SIZE),
     .y = 3.0f * (PLAYER_SIZE / (float)ATLAS_GRID_SIZE),
@@ -145,7 +147,8 @@ static bool intersect_line_segments(const vec2 line1[2], const vec2 line2[2],
   *t = q_sub_p_cross_s / r_cross_s;
   float u = q_sub_p_cross_r / r_cross_s;
 
-  if (!(*t >= 0.0f && *t <= 1.0f && u >= 0.0f && u <= 1.0f)) {
+  if (!(fabs(*t) >= 0.0f && fabs(*t) <= 1.0f && fabs(u) >= 0.0f &&
+        fabs(u) <= 1.0f)) {
     intersection[0] = INFINITY;
     intersection[1] = INFINITY;
 
@@ -158,120 +161,84 @@ static bool intersect_line_segments(const vec2 line1[2], const vec2 line2[2],
   return true;
 }
 
-static void resolve_with_diags(Rectangle *grid_rect, Rectangle *player_rect,
-                               vec2 resolution) {
-  resolution[0] = 0;
-  resolution[1] = 0;
+static float resolve_collision(vec2 player_aabb[2], vec2 grid_aabb[2],
+                               vec2 vel) {
+  //if (is_zero(vel[0], EPS) && is_zero(vel[1], EPS)) {
+  //  return 0;
+  //}
 
-  vec2 grid_points[4] = {
+  vec2 minkowski_aabb[2] = {
     {
-      grid_rect->x,
-      grid_rect->y,
+      grid_aabb[0][0] - player_aabb[1][0],
+      grid_aabb[0][1] - player_aabb[1][1],
     },
 
     {
-      grid_rect->x + grid_rect->width,
-      grid_rect->y,
-    },
-
-    {
-      grid_rect->x + grid_rect->width,
-      grid_rect->y + grid_rect->height,
-    },
-
-    {
-      grid_rect->x,
-      grid_rect->y + grid_rect->height,
+      grid_aabb[1][0] - player_aabb[0][0],
+      grid_aabb[1][1] - player_aabb[0][1],
     },
   };
 
-  vec2 player_points[4] = {
-    {
-      player_rect->x,
-      player_rect->y,
-    },
-
-    {
-      player_rect->x + player_rect->width,
-      player_rect->y,
-    },
-
-    {
-      player_rect->x + player_rect->width,
-      player_rect->y + player_rect->height,
-    },
-
-    {
-      player_rect->x,
-      player_rect->y + player_rect->height,
-    },
+  Rectangle m = {
+    .x = minkowski_aabb[0][0],
+    .y = minkowski_aabb[0][1],
+    .width = minkowski_aabb[1][0] - minkowski_aabb[0][0],
+    .height = minkowski_aabb[1][1] - minkowski_aabb[0][1],
   };
 
-  vec2 grid_centre = {
-    grid_rect->x + (grid_rect->width * 0.5f),
-    grid_rect->y + (grid_rect->height * 0.5f),
-  };
+  vec2 raydir;
+  glm_vec2_copy(vel, raydir);
 
-  vec2 player_centre = {
-    player_rect->x + (player_rect->width * 0.5f),
-    player_rect->y + (player_rect->height * 0.5f),
-  };
+  float tx_1;
+  float tx_2;
+  float ty_1;
+  float ty_2;
 
-  for (uint32_t i = 0; i < 4; i++) {
-    vec2 l1_a[2] = {
-      { player_centre[0], player_centre[1] },
-      { player_points[i][0], player_points[i][1] },
-    };
+  tx_1 = minkowski_aabb[0][0] / raydir[0];
+  tx_2 = minkowski_aabb[1][0] / raydir[0];
 
-    for (uint32_t j = 0; j < 4; j++) {
-      vec2 l2[2] = {
-        { grid_points[j][0], grid_points[j][1] },
-        { grid_points[(j + 1) % 4][0], grid_points[(j + 1) % 4][1] },
-      };
+  ty_1 = minkowski_aabb[0][1] / raydir[1];
+  ty_2 = minkowski_aabb[1][1] / raydir[1];
 
-      float t = 0.0f;
-      vec2 intersection = { 0 };
-      bool isect = intersect_line_segments(l1_a, l2, intersection, &t);
-      if (!isect) {
-        continue;
-      }
+  float tx_min = fmin(tx_1, tx_2);
+  float tx_max = fmax(tx_1, tx_2);
 
-      vec2 diag_dir = { 0 };
-      glm_vec2_sub(l1_a[1], l1_a[0], diag_dir);
+  float ty_min = fmin(ty_1, ty_2);
+  float ty_max = fmax(ty_1, ty_2);
 
-      glm_vec2_scale(diag_dir, 1.0f - t, diag_dir);
-      glm_vec2_negate(diag_dir);
+  float t_min = fmax(tx_min, ty_min);
+  float t_max = fmin(tx_max, ty_max);
 
-      glm_vec2_add(resolution, diag_dir, resolution);
-    }
-
-    vec2 l1_b[2] = {
-      { grid_centre[0], grid_centre[1] },
-      { grid_points[i][0], grid_points[i][1] },
-    };
-
-    for (uint32_t j = 0; j < 4; j++) {
-      vec2 l2[2] = {
-        { player_points[j][0], player_points[j][1] },
-        { player_points[(j + 1) % 4][0], player_points[(j + 1) % 4][1] },
-      };
-
-      float t = 0.0f;
-      vec2 intersection = { 0 };
-      bool isect = intersect_line_segments(l1_b, l2, intersection, &t);
-      if (!isect) {
-        continue;
-      }
-
-      vec2 diag_dir = { 0 };
-      glm_vec2_sub(l1_b[1], l1_b[0], diag_dir);
-
-      glm_vec2_scale(diag_dir, 1.0f - t, diag_dir);
-      glm_vec2_negate(diag_dir);
-
-      glm_vec2_add(resolution, diag_dir, resolution);
-    }
+  if (t_max < 0.0f) {
+    return 1.0f;
   }
+  if (t_min > t_max) {
+    return 1.0f;
+  }
+
+  if (tx_min < 0.0f && ty_min < 0.0f) {
+    return 1.0f;
+  }
+
+  if (tx_min > 1.0f || ty_min > 1.0f) {
+    return 1.0f;
+  }
+
+  //printf("%f\n", t_min);
+
+  //vec2 point;
+  //glm_vec2_scale(raydir, t_min, point);
+
+  //DrawRectangleRec(m, ORANGE);
+  //DrawCircleV((Vector2){ point[0], point[1] }, 1, GRAY);
+  //if (minkowski_aabb[0][0] <= 0 && minkowski_aabb[1][0] >= 0 &&
+  //    minkowski_aabb[0][1] <= 0 && minkowski_aabb[1][1] >= 0) {
+  //  return true;
+  //} else {
+  //  return false;
+  //}
+
+  return t_min;
 }
 
 static void level_collide(struct plug_State *state, bool *is_grounded) {
@@ -285,6 +252,9 @@ static void level_collide(struct plug_State *state, bool *is_grounded) {
 
   bool did_feet_collide = false;
   vec2 res_vector = { 0 };
+
+  float min_t = 1.0f;
+
   for (uint32_t y = 0; y < level->grid_height; y++) {
     for (uint32_t x = 0; x < level->grid_width; x++) {
       uint32_t grid_index = y * level->grid_width + x;
@@ -320,10 +290,21 @@ static void level_collide(struct plug_State *state, bool *is_grounded) {
         .height = hitbox->height,
       };
 
-      vec2 tmp = { 0 };
-      resolve_with_diags(&cell_rect, &player_rect, tmp);
+      vec2 player_aabb[2] = {
+        {
+          player->pos.x + hitbox->x,
+          player->pos.y + hitbox->y,
+        },
+        {
+          player->pos.x + hitbox->x + hitbox->width,
+          player->pos.y + hitbox->y + hitbox->height,
+        },
+      };
 
-      glm_vec2_add(res_vector, tmp, res_vector);
+      float t = resolve_collision(player_aabb, grid_aabb,
+                                  (vec2){ player->vel.x, player->vel.y });
+
+      min_t = t < min_t ? t : min_t;
 
       //if (!is_zero(res_vector[0], EPS) && !is_zero(res_vector[1], EPS)) {
       //  player->vel.x = 0;
@@ -332,13 +313,15 @@ static void level_collide(struct plug_State *state, bool *is_grounded) {
 
       vec2 feet_hitbxox[2] = {
         {
-          player_rect.x - (2 * EPS),
+          player_rect.x +
+            ((1.0f - PLAYER_FEET_HITBOX_WIDTH_FACT) / 2.0f) * player_rect.width,
           player_rect.y + player_rect.height,
         },
 
         {
-          player_rect.x + player_rect.width - (2 * EPS),
-          player_rect.y + player_rect.height + PLAYER_FEET_HITBOX_SIZE,
+          player_rect.x + player_rect.width -
+            ((1.0f - PLAYER_FEET_HITBOX_WIDTH_FACT) / 2.0f) * player_rect.width,
+          player_rect.y + player_rect.height + PLAYER_FEET_HITBOX_WIDTH_FACT,
         },
       };
 
@@ -347,10 +330,8 @@ static void level_collide(struct plug_State *state, bool *is_grounded) {
         .y = player_rect.y + player_rect.height,
 
         .width = player_rect.width,
-        .height = PLAYER_FEET_HITBOX_SIZE,
+        .height = PLAYER_FEET_HITBOX_WIDTH_FACT,
       };
-
-      DrawRectangleRec(feet_rect, RED);
 
       bool feet_inter = aabb_collision(feet_hitbxox, grid_aabb);
       //printf("%d\n", feet_inter);
@@ -366,8 +347,10 @@ static void level_collide(struct plug_State *state, bool *is_grounded) {
     }
   }
 
-  player->pos.x += res_vector[0];
-  player->pos.y += res_vector[1];
+  player->pos.x += min_t * player->vel.x;
+  if (!*is_grounded) {
+    player->pos.y += min_t * player->vel.y;
+  }
 }
 
 static void update_player(struct plug_State *state) {
@@ -381,6 +364,15 @@ static void update_player(struct plug_State *state) {
   plug_state->player.vel.x = glm_clamp(
     plug_state->player.vel.x, -PLAYER_TERMINAL_SPEED, PLAYER_TERMINAL_SPEED);
 
+  //if (IsKeyDown(KEY_SPACE)) {
+  //  state->player.pos.y -= PLAYER_ACCELERATION * GetFrameTime();
+  //  state->player.vel.y = -PLAYER_ACCELERATION;
+  //}
+  //if (IsKeyDown(KEY_LEFT_SHIFT)) {
+  //  state->player.pos.y += PLAYER_ACCELERATION * GetFrameTime();
+  //  state->player.vel.y = PLAYER_ACCELERATION;
+  //}
+
   if (state->player.grounded && IsKeyDown(KEY_SPACE)) {
     state->player.grounded = false;
     state->player.vel.y = PLAYER_JUMP_SPEED;
@@ -391,10 +383,10 @@ static void update_player(struct plug_State *state) {
     state->player.vel.y = fmin(state->player.vel.y, PLAYER_GRAV_TERMINAL_SPEED);
   }
 
-  state->player.pos.x += state->player.vel.x;
-  state->player.pos.y += state->player.vel.y;
-
   level_collide(state, &state->player.grounded);
+
+  //state->player.pos.x += state->player.vel.x;
+  //state->player.pos.y += state->player.vel.y;
 
   state->player.camera.target.x = state->player.pos.x + (PLAYER_SIZE / 2);
   state->player.camera.target.y = state->player.pos.y + (PLAYER_SIZE / 2);
@@ -429,6 +421,11 @@ static void draw_player(struct plug_State *state) {
 }
 
 void plug_update(void) {
+  if (IsWindowResized()) {
+    plug_state->player.camera.offset.x = (float)GetScreenWidth() * 0.5f;
+    plug_state->player.camera.offset.y = (float)GetScreenHeight() * 0.5f;
+  }
+
   float fps = 1.0f / GetFrameTime();
   char fps_str[6] = { 0 };
   snprintf(fps_str, sizeof(fps_str), "%.2f", fps);
@@ -453,6 +450,7 @@ void plug_update(void) {
     DrawRectangleLinesEx(r, 0.5f, BLACK);
   }
   update_player(plug_state);
+  DrawCircleV((Vector2){ 0, 0 }, 1, BLUE);
 
   EndMode2D();
 

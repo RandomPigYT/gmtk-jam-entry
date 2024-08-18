@@ -10,6 +10,3 @@
 [submodule "external/stb"]
 	path = external/stb
 	url = git@github.com:nothings/stb.git
-[submodule "external/box2d"]
-	path = external/box2d
-	url = git@github.com:erincatto/box2d.git

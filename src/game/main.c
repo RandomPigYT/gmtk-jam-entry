@@ -32,6 +32,7 @@ int main(void) {
   SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 
   InitWindow(WIDTH * FACTOR, HEIGHT * FACTOR, "Game");
+  MaximizeWindow();
   SetTargetFPS(120);
   hotreload_load_plug();
   plug_init();

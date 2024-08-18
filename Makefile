@@ -30,11 +30,12 @@ CFLAGS := -I$(ROOT_PATH)/$(SRC) -isystem $(EXTERNAL_DIR) -I$(ROOT_PATH)/$(INCLUD
 
 ifeq ($(PLATFORM), linux)
 
-	LDFLAGS := -Wl,-rpath=$(ROOT_PATH)/$(BIN) -L$(ROOT_PATH)/$(BIN) -L$(ROOT_PATH)/$(EXTERNAL_LIBS_DIR)/raylib -lraylib -lm
+	LDFLAGS := -Wl,-rpath=$(ROOT_PATH)/$(BIN) -L$(EXTERNAL_LIBS_DIR)/box2d -lbox2d 
+	LDFLAGS += -L$(ROOT_PATH)/$(BIN) -L$(ROOT_PATH)/$(EXTERNAL_LIBS_DIR)/raylib -lraylib -lm
 
 else
 
-	LDFLAGS := -Wl,-rpath=$(ROOT_PATH)/$(BIN) -L$(ROOT_PATH)/$(BIN) -L$(ROOT_PATH) -l:./libraylib.a -lm
+	LDFLAGS := -Wl,-rpath=$(ROOT_PATH)/$(BIN)  -L$(ROOT_PATH)/$(BIN) -L$(ROOT_PATH) -l:./libraylib.a -lm
 
 endif
 

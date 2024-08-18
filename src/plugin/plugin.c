@@ -10,7 +10,7 @@
 #include <string.h>
 #include <math.h>
 
-#define PLAYER_TERMINAL_SPEED 5
+#define PLAYER_TERMINAL_SPEED 2
 #define PLAYER_GRAV_TERMINAL_SPEED 75
 #define PLAYER_SPRITE_X 0
 #define PLAYER_SPRITE_Y (ATLAS_GRID_SIZE * 4)
@@ -19,6 +19,8 @@
 #define PLAYER_DECELERATION 30
 
 #define EPS 1e-6f
+
+#define PLAYER_FEET_HITBOX_SIZE 0.0001
 
 #define GRAVITY 5
 
@@ -111,25 +113,25 @@ static inline bool is_zero(float n, float eps) {
   return n < eps && n > -eps;
 }
 
-static bool intersect_line_segments(const vec4 line1[2], const vec4 line2[2],
-                                    vec4 intersection, float *t) {
-  vec2 p = { line1[0][0], line1[0][2] };
-  vec2 q = { line2[0][0], line2[0][2] };
+static bool intersect_line_segments(const vec2 line1[2], const vec2 line2[2],
+                                    vec2 intersection, float *t) {
+  vec2 p = { line1[0][0], line1[0][1] };
+  vec2 q = { line2[0][0], line2[0][1] };
 
   vec2 r = {
     line1[1][0] - line1[0][0],
-    line1[1][2] - line1[0][2],
+    line1[1][1] - line1[0][1],
   };
 
   vec2 s = {
     line2[1][0] - line2[0][0],
-    line2[1][2] - line2[0][2],
+    line2[1][1] - line2[0][1],
   };
 
   float r_cross_s = glm_vec2_cross(r, s);
   if (is_zero(r_cross_s, EPS)) {
     intersection[0] = INFINITY;
-    intersection[2] = INFINITY;
+    intersection[1] = INFINITY;
 
     return false;
   }
@@ -145,20 +147,131 @@ static bool intersect_line_segments(const vec4 line1[2], const vec4 line2[2],
 
   if (!(*t >= 0.0f && *t <= 1.0f && u >= 0.0f && u <= 1.0f)) {
     intersection[0] = INFINITY;
-    intersection[2] = INFINITY;
+    intersection[1] = INFINITY;
 
     return false;
   }
 
-  intersection[0] = p[0] + r[0] * *t;
-  intersection[2] = p[1] + r[1] * *t;
+  intersection[0] = p[0] + r[0] * (*t);
+  intersection[1] = p[1] + r[1] * (*t);
 
   return true;
 }
 
-static void resolve_with_diags(struct plug_State *state, vec2 grid_aabb[2],
-                               vec2 player_aabb[2]) {
-  // TODO: Do this
+static void resolve_with_diags(Rectangle *grid_rect, Rectangle *player_rect,
+                               vec2 resolution) {
+  resolution[0] = 0;
+  resolution[1] = 0;
+
+  vec2 grid_points[4] = {
+    {
+      grid_rect->x,
+      grid_rect->y,
+    },
+
+    {
+      grid_rect->x + grid_rect->width,
+      grid_rect->y,
+    },
+
+    {
+      grid_rect->x + grid_rect->width,
+      grid_rect->y + grid_rect->height,
+    },
+
+    {
+      grid_rect->x,
+      grid_rect->y + grid_rect->height,
+    },
+  };
+
+  vec2 player_points[4] = {
+    {
+      player_rect->x,
+      player_rect->y,
+    },
+
+    {
+      player_rect->x + player_rect->width,
+      player_rect->y,
+    },
+
+    {
+      player_rect->x + player_rect->width,
+      player_rect->y + player_rect->height,
+    },
+
+    {
+      player_rect->x,
+      player_rect->y + player_rect->height,
+    },
+  };
+
+  vec2 grid_centre = {
+    grid_rect->x + (grid_rect->width * 0.5f),
+    grid_rect->y + (grid_rect->height * 0.5f),
+  };
+
+  vec2 player_centre = {
+    player_rect->x + (player_rect->width * 0.5f),
+    player_rect->y + (player_rect->height * 0.5f),
+  };
+
+  for (uint32_t i = 0; i < 4; i++) {
+    vec2 l1_a[2] = {
+      { player_centre[0], player_centre[1] },
+      { player_points[i][0], player_points[i][1] },
+    };
+
+    for (uint32_t j = 0; j < 4; j++) {
+      vec2 l2[2] = {
+        { grid_points[j][0], grid_points[j][1] },
+        { grid_points[(j + 1) % 4][0], grid_points[(j + 1) % 4][1] },
+      };
+
+      float t = 0.0f;
+      vec2 intersection = { 0 };
+      bool isect = intersect_line_segments(l1_a, l2, intersection, &t);
+      if (!isect) {
+        continue;
+      }
+
+      vec2 diag_dir = { 0 };
+      glm_vec2_sub(l1_a[1], l1_a[0], diag_dir);
+
+      glm_vec2_scale(diag_dir, 1.0f - t, diag_dir);
+      glm_vec2_negate(diag_dir);
+
+      glm_vec2_add(resolution, diag_dir, resolution);
+    }
+
+    vec2 l1_b[2] = {
+      { grid_centre[0], grid_centre[1] },
+      { grid_points[i][0], grid_points[i][1] },
+    };
+
+    for (uint32_t j = 0; j < 4; j++) {
+      vec2 l2[2] = {
+        { player_points[j][0], player_points[j][1] },
+        { player_points[(j + 1) % 4][0], player_points[(j + 1) % 4][1] },
+      };
+
+      float t = 0.0f;
+      vec2 intersection = { 0 };
+      bool isect = intersect_line_segments(l1_b, l2, intersection, &t);
+      if (!isect) {
+        continue;
+      }
+
+      vec2 diag_dir = { 0 };
+      glm_vec2_sub(l1_b[1], l1_b[0], diag_dir);
+
+      glm_vec2_scale(diag_dir, 1.0f - t, diag_dir);
+      glm_vec2_negate(diag_dir);
+
+      glm_vec2_add(resolution, diag_dir, resolution);
+    }
+  }
 }
 
 static void level_collide(struct plug_State *state, bool *is_grounded) {
@@ -170,8 +283,8 @@ static void level_collide(struct plug_State *state, bool *is_grounded) {
     &DA_AT(state->levels, (uint32_t)state->current_level);
   struct plug_Player *player = &state->player;
 
-  bool did_collide = false;
-  Vector2 res_vector = { 0 };
+  bool did_feet_collide = false;
+  vec2 res_vector = { 0 };
   for (uint32_t y = 0; y < level->grid_height; y++) {
     for (uint32_t x = 0; x < level->grid_width; x++) {
       uint32_t grid_index = y * level->grid_width + x;
@@ -199,35 +312,62 @@ static void level_collide(struct plug_State *state, bool *is_grounded) {
       };
 
       Rectangle *hitbox = &player->hitbox;
-      vec2 player_aabb[2] = {
+      Rectangle player_rect = {
+        .x = player->pos.x + hitbox->x,
+        .y = player->pos.y + hitbox->y,
+
+        .width = hitbox->width,
+        .height = hitbox->height,
+      };
+
+      vec2 tmp = { 0 };
+      resolve_with_diags(&cell_rect, &player_rect, tmp);
+
+      glm_vec2_add(res_vector, tmp, res_vector);
+
+      //if (!is_zero(res_vector[0], EPS) && !is_zero(res_vector[1], EPS)) {
+      //  player->vel.x = 0;
+      //  player->vel.y = 0;
+      //}
+
+      vec2 feet_hitbxox[2] = {
         {
-          player->pos.x + hitbox->x,
-          player->pos.y + hitbox->y,
+          player_rect.x - (2 * EPS),
+          player_rect.y + player_rect.height,
         },
+
         {
-          player->pos.x + hitbox->x + hitbox->width,
-          player->pos.y + hitbox->y + hitbox->height,
+          player_rect.x + player_rect.width - (2 * EPS),
+          player_rect.y + player_rect.height + PLAYER_FEET_HITBOX_SIZE,
         },
       };
 
-      bool aabb_inter = aabb_collision(grid_aabb, player_aabb);
-      if (!aabb_inter) {
-        continue;
+      Rectangle feet_rect = {
+        .x = player_rect.x,
+        .y = player_rect.y + player_rect.height,
+
+        .width = player_rect.width,
+        .height = PLAYER_FEET_HITBOX_SIZE,
+      };
+
+      DrawRectangleRec(feet_rect, RED);
+
+      bool feet_inter = aabb_collision(feet_hitbxox, grid_aabb);
+      //printf("%d\n", feet_inter);
+      if (feet_inter) {
+        *is_grounded = true;
+        player->vel.y = 0;
+
+        did_feet_collide = true;
+
+      } else if (!feet_inter && !did_feet_collide) {
+        *is_grounded = false;
       }
-
-      Vector2 dv = { 0 };
-
-      player->vel.y = 0;
-      //player->vel.x = 0;
-
-      *is_grounded = true;
-      did_collide = true;
     }
   }
 
-  if (!did_collide) {
-    *is_grounded = false;
-  }
+  player->pos.x += res_vector[0];
+  player->pos.y += res_vector[1];
 }
 
 static void update_player(struct plug_State *state) {
@@ -312,10 +452,9 @@ void plug_update(void) {
     };
     DrawRectangleLinesEx(r, 0.5f, BLACK);
   }
+  update_player(plug_state);
 
   EndMode2D();
-
-  update_player(plug_state);
 
   DrawText(fps_str, 0, 0, 20, BLACK);
   EndDrawing();

@@ -35,7 +35,7 @@ if (ENVIRONMENT_IS_NODE) {
 
 // --pre-jses are emitted after the Module integration code, so that they can
 // refer to Module (if they choose; they can also define Module)
-// include: /tmp/tmp4jixvmw7.js
+// include: /tmp/tmpdm30a9eu.js
 
   if (!Module.expectedDataFileDownloads) {
     Module.expectedDataFileDownloads = 0;
@@ -216,11 +216,11 @@ Module['FS_createPath']("/", "assets", true, true);
     }
 
     }
-    loadPackage({"files": [{"filename": "/assets/NewerCampFire_2.png", "start": 0, "end": 11166}, {"filename": "/assets/gmtk-texture-atlas.png", "start": 11166, "end": 12179}], "remote_package_size": 12179});
+    loadPackage({"files": [{"filename": "/assets/NewerCampFire_2.png", "start": 0, "end": 11166}, {"filename": "/assets/gmtk-texture-atlas.png", "start": 11166, "end": 12179}, {"filename": "/index.data", "start": 12179, "end": 23345}, {"filename": "/index.html", "start": 23345, "end": 24013}, {"filename": "/index.js", "start": 24013, "end": 372755}, {"filename": "/index.wasm", "start": 372755, "end": 854225}], "remote_package_size": 854225});
 
   })();
 
-// end include: /tmp/tmp4jixvmw7.js
+// end include: /tmp/tmpdm30a9eu.js
 
 
 // Sometimes an existing Module object exists with properties

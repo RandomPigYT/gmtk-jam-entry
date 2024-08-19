@@ -35,7 +35,7 @@ if (ENVIRONMENT_IS_NODE) {
 
 // --pre-jses are emitted after the Module integration code, so that they can
 // refer to Module (if they choose; they can also define Module)
-// include: /tmp/tmpug2d8ju7.js
+// include: /tmp/tmpnf236geq.js
 
   if (!Module.expectedDataFileDownloads) {
     Module.expectedDataFileDownloads = 0;
@@ -216,11 +216,11 @@ Module['FS_createPath']("/", "assets", true, true);
     }
 
     }
-    loadPackage({"files": [{"filename": "/assets/NewerCampFire_2.png", "start": 0, "end": 11166}, {"filename": "/assets/gmtk-texture-atlas.png", "start": 11166, "end": 12179}, {"filename": "/index.data", "start": 12179, "end": 23345}, {"filename": "/index.html", "start": 23345, "end": 24013}, {"filename": "/index.js", "start": 24013, "end": 372993}, {"filename": "/index.wasm", "start": 372993, "end": 859231}], "remote_package_size": 859231});
+    loadPackage({"files": [{"filename": "/assets/NewerCampFire_2.png", "start": 0, "end": 11166}, {"filename": "/assets/gmtk-texture-atlas.png", "start": 11166, "end": 12179}], "remote_package_size": 12179});
 
   })();
 
-// end include: /tmp/tmpug2d8ju7.js
+// end include: /tmp/tmpnf236geq.js
 
 
 // Sometimes an existing Module object exists with properties
@@ -828,40 +828,40 @@ var tempI64;
 // === Body ===
 
 var ASM_CONSTS = {
-  24160: () => { if (document.fullscreenElement) return 1; },  
- 24206: () => { return document.getElementById('canvas').width; },  
- 24258: () => { return parseInt(document.getElementById('canvas').style.width); },  
- 24326: () => { document.exitFullscreen(); },  
- 24353: () => { setTimeout(function() { Module.requestFullscreen(false, false); }, 100); },  
- 24426: () => { if (document.fullscreenElement) return 1; },  
- 24472: () => { return document.getElementById('canvas').width; },  
- 24524: () => { return screen.width; },  
- 24549: () => { document.exitFullscreen(); },  
- 24576: () => { setTimeout(function() { Module.requestFullscreen(false, true); setTimeout(function() { canvas.style.width="unset"; }, 100); }, 100); },  
- 24709: () => { if (document.fullscreenElement) return 1; },  
- 24755: () => { return document.getElementById('canvas').width; },  
- 24807: () => { return parseInt(document.getElementById('canvas').style.width); },  
- 24875: () => { if (document.fullscreenElement) return 1; },  
- 24921: () => { return document.getElementById('canvas').width; },  
- 24973: () => { return screen.width; },  
- 24998: () => { if (document.fullscreenElement) return 1; },  
- 25044: () => { return document.getElementById('canvas').width; },  
- 25096: () => { return screen.width; },  
- 25121: () => { document.exitFullscreen(); },  
- 25148: () => { if (document.fullscreenElement) return 1; },  
- 25194: () => { return document.getElementById('canvas').width; },  
- 25246: () => { return parseInt(document.getElementById('canvas').style.width); },  
- 25314: () => { document.exitFullscreen(); },  
- 25341: () => { return screen.width; },  
- 25366: () => { return screen.height; },  
- 25392: () => { return window.screenX; },  
- 25419: () => { return window.screenY; },  
- 25446: ($0) => { navigator.clipboard.writeText(UTF8ToString($0)); },  
- 25499: ($0) => { document.getElementById("canvas").style.cursor = UTF8ToString($0); },  
- 25570: () => { document.getElementById('canvas').style.cursor = 'none'; },  
- 25627: ($0) => { document.getElementById('canvas').style.cursor = UTF8ToString($0); },  
- 25698: () => { if (document.fullscreenElement) return 1; },  
- 25744: () => { if (document.pointerLockElement) return 1; }
+  24352: () => { if (document.fullscreenElement) return 1; },  
+ 24398: () => { return document.getElementById('canvas').width; },  
+ 24450: () => { return parseInt(document.getElementById('canvas').style.width); },  
+ 24518: () => { document.exitFullscreen(); },  
+ 24545: () => { setTimeout(function() { Module.requestFullscreen(false, false); }, 100); },  
+ 24618: () => { if (document.fullscreenElement) return 1; },  
+ 24664: () => { return document.getElementById('canvas').width; },  
+ 24716: () => { return screen.width; },  
+ 24741: () => { document.exitFullscreen(); },  
+ 24768: () => { setTimeout(function() { Module.requestFullscreen(false, true); setTimeout(function() { canvas.style.width="unset"; }, 100); }, 100); },  
+ 24901: () => { if (document.fullscreenElement) return 1; },  
+ 24947: () => { return document.getElementById('canvas').width; },  
+ 24999: () => { return parseInt(document.getElementById('canvas').style.width); },  
+ 25067: () => { if (document.fullscreenElement) return 1; },  
+ 25113: () => { return document.getElementById('canvas').width; },  
+ 25165: () => { return screen.width; },  
+ 25190: () => { if (document.fullscreenElement) return 1; },  
+ 25236: () => { return document.getElementById('canvas').width; },  
+ 25288: () => { return screen.width; },  
+ 25313: () => { document.exitFullscreen(); },  
+ 25340: () => { if (document.fullscreenElement) return 1; },  
+ 25386: () => { return document.getElementById('canvas').width; },  
+ 25438: () => { return parseInt(document.getElementById('canvas').style.width); },  
+ 25506: () => { document.exitFullscreen(); },  
+ 25533: () => { return screen.width; },  
+ 25558: () => { return screen.height; },  
+ 25584: () => { return window.screenX; },  
+ 25611: () => { return window.screenY; },  
+ 25638: ($0) => { navigator.clipboard.writeText(UTF8ToString($0)); },  
+ 25691: ($0) => { document.getElementById("canvas").style.cursor = UTF8ToString($0); },  
+ 25762: () => { document.getElementById('canvas').style.cursor = 'none'; },  
+ 25819: ($0) => { document.getElementById('canvas').style.cursor = UTF8ToString($0); },  
+ 25890: () => { if (document.fullscreenElement) return 1; },  
+ 25936: () => { if (document.pointerLockElement) return 1; }
 };
 function GetWindowInnerWidth() { return window.innerWidth; }
 function GetWindowInnerHeight() { return window.innerHeight; }
@@ -7403,6 +7403,11 @@ function GetWindowInnerHeight() { return window.innerHeight; }
 
 
 
+
+
+
+
+
   
   
   
@@ -8515,6 +8520,8 @@ function GetWindowInnerHeight() { return window.innerHeight; }
 
   var _glfwDefaultWindowHints = () => GLFW.defaultWindowHints();
 
+  var _glfwDestroyWindow = (winid) => GLFW.destroyWindow(winid);
+
   var _glfwGetPrimaryMonitor = () => 1;
 
   var _glfwGetTime = () => GLFW.getTime() - GLFW.initialTime;
@@ -9146,11 +9153,21 @@ var wasmImports = {
   /** @export */
   glCullFace: _glCullFace,
   /** @export */
+  glDeleteBuffers: _glDeleteBuffers,
+  /** @export */
   glDeleteProgram: _glDeleteProgram,
+  /** @export */
+  glDeleteShader: _glDeleteShader,
+  /** @export */
+  glDeleteTextures: _glDeleteTextures,
   /** @export */
   glDepthFunc: _glDepthFunc,
   /** @export */
+  glDetachShader: _glDetachShader,
+  /** @export */
   glDisable: _glDisable,
+  /** @export */
+  glDisableVertexAttribArray: _glDisableVertexAttribArray,
   /** @export */
   glDrawArrays: _glDrawArrays,
   /** @export */
@@ -9219,6 +9236,8 @@ var wasmImports = {
   glfwCreateWindow: _glfwCreateWindow,
   /** @export */
   glfwDefaultWindowHints: _glfwDefaultWindowHints,
+  /** @export */
+  glfwDestroyWindow: _glfwDestroyWindow,
   /** @export */
   glfwGetPrimaryMonitor: _glfwGetPrimaryMonitor,
   /** @export */

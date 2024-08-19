@@ -15,27 +15,14 @@
 #define HEIGHT 9
 #define FACTOR 60
 
-void game_frame() {
-  BeginDrawing();
-
-  ClearBackground(CLITERAL(Color){
-    GetRandomValue(0, 255),
-    GetRandomValue(0, 255),
-    GetRandomValue(0, 255),
-    255,
-  });
-
-  EndDrawing();
-}
-
 int main(void) {
   SetConfigFlags(FLAG_WINDOW_RESIZABLE);
 
   InitWindow(WIDTH * FACTOR, HEIGHT * FACTOR, "Game");
   MaximizeWindow();
-  SetTargetFPS(120);
   hotreload_load_plug();
   plug_init();
+  SetTargetFPS(60);
 
 #ifdef PLATFORM_WEB
 
@@ -44,8 +31,6 @@ int main(void) {
 #endif
 
 #ifndef PLATFORM_WEB
-  SetRandomSeed(69);
-
   while (!WindowShouldClose()) {
     plug_update();
 
@@ -60,5 +45,6 @@ int main(void) {
 
 #endif
 
+  CloseWindow();
   return 0;
 }

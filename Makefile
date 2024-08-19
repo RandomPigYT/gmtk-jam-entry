@@ -107,5 +107,5 @@ valgrind:
          --verbose \
          --log-file=./val.txt \
 				 --keep-debuginfo=yes\
-         ./bin/test	"./assets/scenes/neighbours.dsrs"
+         ./bin/game
 
